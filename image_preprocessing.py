@@ -60,6 +60,7 @@ def quadImage(img):
 
 
 def sixteenImage(img):
+    img = img.resize((992, 992))
     """
     takes in an image and returns list of 16 sections
     1  2  ||  5  6
@@ -76,3 +77,36 @@ def sixteenImage(img):
     s13,s14,s15,s16 = quadImage(q4)
     ret = [s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16]
     return ret
+
+
+def differential_mask(array, target):
+    difference = array - target
+    mask = np.ma.less_equal(difference, -1)
+
+    if np.all(mask):
+        c = np.abs(difference).argmin()
+        return c
+    masked_difference = np.ma.masked_array(difference, mask)
+    return masked_difference.argmin()
+
+
+def match_histograms(original_image, specified_histogram):
+    original_shape = original_image.shape
+    original_image = original_image.ravel()
+
+    s_values, bin_index, s_counts = np.unique(original_image, return_inverse=True, return_counts=True)
+    t_values, t_counts = np.unique(specified_histogram, return_counts=True)
+
+    s = np.cumsum(s_counts).astype(np.float32)
+    s /= s[-1]
+
+    t = np.cumsum(t_counts).astype(np.float32)
+    t /= t[-1]
+
+    s_out = np.around(s*255)
+    t_out = np.around(t*255)
+    output = []
+    for data in s_out[:]:
+        output.append(differential_mask(t_out, data))
+    output = np.array(output, dtype=np.uint8)
+    return output[bin_index].reshape(original_shape)

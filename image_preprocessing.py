@@ -47,7 +47,8 @@ def sobel_filters(img):
     grad = np.hypot(sobel_horizontal, sobel_vertical)
     grad = grad/grad.max() * 255
     angle = np.arctan2(sobel_vertical, sobel_horizontal)
-    return [grad.astype(np.uint8), angle.astype(np.uint8)]
+    angle = angle * 180
+    return [grad, angle]
 
 
 def quadImage(img):

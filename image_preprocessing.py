@@ -28,3 +28,22 @@ def binary_threshold(img, thresh):
     # Apply a binary threshold of the given value to the given image
     ret, threshold_image = cv2.threshold(img, thresh, 1, cv2.THRESH_BINARY)
     return threshold_image
+
+
+def gaussian_filter_from_project(image, m, n, sigma):
+    m = int(m) // 2
+    n = int(n) // 2
+    x, y = np.mgrid[-m:m, -n:n]
+    normal = 1 / (2.0 * np.pi * sigma ** 2)
+    g = np.exp(-((x ** 2 + y ** 2) / (2.0 * sigma ** 2))) * normal
+    blurred_image = ndimage.filters.convolve(image, g)
+    return blurred_image
+
+
+def sobel_filters(img):
+    sobel_horizontal = ndimage.filters.sobel(img, 0)
+    sobel_vertical = ndimage.filters.sobel(img, 1)
+    grad = np.hypot(sobel_horizontal, sobel_vertical)
+    grad = grad/grad.max() * 255
+    angle = np.arctan2(sobel_vertical, sobel_horizontal)
+    return [grad.astype(np.uint8), angle.astype(np.uint8)]

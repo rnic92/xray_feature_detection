@@ -15,7 +15,7 @@ def main():
     eq_image = pre.histogram_equalize(image)
     plt.imshow(eq_image, cmap="gray")
     plt.show()
-    gauss_filtered = pre.gaussian_filter(eq_image, 3)
+    gauss_filtered = pre.gaussian_filter(eq_image, 5)
     plt.imshow(gauss_filtered, cmap="gray")
     plt.show()
     threshed = pre.binary_threshold(eq_image, .5)
@@ -27,6 +27,16 @@ def main():
     selected = edges+eq_image  # Just for fun to see what it looks like
     selected = pre.histogram_equalize(selected)
     plt.imshow(selected, cmap="gray")
+    plt.show()
+
+    sobel_gradient, sobel_angle = pre.sobel_filters(gauss_filtered)
+    equalized_gradient = pre.histogram_equalize(sobel_gradient)
+    plt.imshow(equalized_gradient)
+    plt.title('Equalized Histogram of the Gradient')
+
+    plt.show()
+    plt.hist(equalized_gradient)
+    plt.title("Histogram of equalized gradient")
     plt.show()
 
 

@@ -50,7 +50,13 @@ def sobel_filters(img):
     angle = angle * 180
     return [grad, angle]
 
-
+def threshold(img, maxval):
+    m,n = img.shape
+    for i in range(m):
+        for j in range(n):
+            if img[i][j] < maxval:
+                img[i][j] = 0
+    return img
 def quadImage(img):
     width,height = img.size
     q1 = img.crop((0,0,width/2,height/2))
